@@ -14,79 +14,90 @@
 // we would use submit as our event listener instea of click like we had it before
 // for that we will create a variable for our form that needs to listen for submit 
 // event listener to add a new item to the list, targetting form with the add as its class
-const form = document.querySelector('form.add')
-const addButton = document.querySelector('#addButton');
-const addItem = document.querySelector('#itemToAdd');
-const ul = document.querySelector(".todo");
-const body = document.querySelector('body');
-// we want to prevent bubbling from happening to the click event on the child element inside the app not the whole body element
-const app = document.querySelector('.app')
+
+window.addEventListener('DOMContentLoaded', init);
+function init() {
+    const form = document.querySelector('form.add')
+    const addButton = document.querySelector('#addButton');
+    const addItem = document.querySelector('#itemToAdd');
+    const ul = document.querySelector(".todo");
+    const body = document.querySelector('body');
+    // we want to prevent bubbling from happening to the click event on the child element inside the app not the whole body element
+    const app = document.querySelector('.app')
 
 
-app.addEventListener('click', function(event) {
-    event.stopPropagation();
-})
+    app.addEventListener('click', function(event) {
+        event.stopPropagation();
+    })
 
-// we are doing this b/c we want when viewer clicks outside the app div the field gets refreshed
-body.addEventListener('click', function() {
-    console.log('clear this');
-})
-// next step is add a event listener to the form
-form.addEventListener('submit', function (event) {
-    console.log(event);
-    // to prevent browser from refershing
-    // only if we have a value inside our form add it to the list
-    event.preventDefault();
-    if (addItem.value !== '') {
-        const newItem = createItem(addItem.value)  
-        // first we create the li element
-        // and add the user text to the element we created
-        // then add element as child to the ul
-        ul.appendChild(newItem);
-        addItem.value = '';
-        // focus() method is also a property on the node addItem
-        // node.focus()
-        addItem.focus();
+    // we are doing this b/c we want when viewer clicks outside the app div the field gets refreshed
+    body.addEventListener('click', function() {
+        ul.parentNode.removeChild(ul);
+        // another way to do this is to use builtin method called innerHTML which points to all the 
+        //content inside the ul element and set that to an empty string.
+        ///
+        // ul.innerHTML = '';
+        ///
+    })
+    // next step is add a event listener to the form
+    form.addEventListener('submit', function (event) {
+        console.log(event);
+        // to prevent browser from refereshing
+        // only if we have a value inside our form add it to the list
+        event.preventDefault();
+        if (addItem.value !== '') {
+            const newItem = createItem(addItem.value)  
+            // first we create the li element
+            // and add the user text to the element we created
+            // then add element as child to the ul
+            ul.appendChild(newItem);
+            addItem.value = '';
+            // focus() method is also a property on the node addItem
+            // node.focus()
+            addItem.focus();
+        }
+        
+    });
+
+
+    // going to create some sub functions
+    // create element is going to recieve an argument that is the value we are adding 
+    // to the input field called 'val' 
+    // we are going to use this function again and again
+    function createItem (val) {
+        const item = document.createElement('li');
+        // so here we add the textContent to our span instead of the item only
+        const span = document.createElement('span');
+        // we also adding a delete button to each new item/span we add to the list
+        const deletebtn = document.createElement('button');
+        span.textContent = val;
+        deletebtn.textContent = 'Delete';
+        deletebtn.classList.add('btn-link');
+
+        item.appendChild(span);
+        item.appendChild(deletebtn);
+
+            deletebtn.addEventListener('click', function(){
+                // to remove node
+                // nodeToRemove.parentNode.removeChild(nodeToRemove)
+                item.parentNode.removeChild(item);
+            })
+
+            // Press the "Enter" key inside the input field to trigger the button
+            addItem.addEventListener('keyup', function(event) {
+                // Number 13 is the 'Enter' key on the keyboard 
+                if(event.keyCode === 13) {
+                    // event.preventDefault();
+                    // Tirgger the button element with a click
+                    document.querySelector(addItem.click());
+                }
+            });
+
+
+        // and spit out the newly created item in the list
+        return item;
     }
+
+};
     
-});
-
-
-// going to create some sub functions
-// create element is going to recieve an argument that is the value we are adding 
-// to the input field called 'val' 
-// we are going to use this function again and again
-function createItem (val) {
-    const item = document.createElement('li');
-    // so here we add the textContent to our span instead of the item only
-    const span = document.createElement('span');
-    // we also adding a delete button to each new item/span we add to the list
-    const deletebtn = document.createElement('button');
-    span.textContent = val;
-    deletebtn.textContent = 'Delete';
-    deletebtn.classList.add('btn-link');
-
-    item.appendChild(span);
-    item.appendChild(deletebtn);
-
-        deletebtn.addEventListener('click', function(){
-            // to remove node
-            // nodeToRemove.parentNode.removeChild(nodeToRemove)
-            item.parentNode.removeChild(item);
-        })
-
-        // Press the "Enter" key inside the input field to trigger the button
-        addItem.addEventListener('keyup', function(event) {
-            // Number 13 is the 'Enter' key on the keyboard 
-            if(event.keyCode === 13) {
-                // event.preventDefault();
-                // Tirgger the button element with a click
-                document.querySelector(addItem.click());
-            }
-        });
-
-
-    // and spit out the newly created item in the list
-    return item;
-}
 
